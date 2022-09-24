@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 import DB
-from ats.models.general import Tags
+from ats.models.enums import Tags
 from ats.models.users import RegisterUser
 from ats.security import admin_permission, create_user
 

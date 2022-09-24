@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
 import DB
-from ats.models.general import Tags
+from ats.models.enums import Tags
 from ats.security import authenticate_user, CREDENTIALS_EXCEPTION, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
 
 router = APIRouter(

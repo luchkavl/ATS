@@ -4,7 +4,7 @@ from fastapi import Path, Depends
 
 import DB
 from ats.exceptions import CandidateNotFoundException
-from ats.models.general import Vacancies
+from ats.models.enums import Vacancies
 
 
 def candidate_exists(candidate_id: UUID = Path(default=..., title="Candidate's UUID")) -> UUID:

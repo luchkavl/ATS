@@ -1,7 +1,7 @@
 from uuid import UUID
 from pydantic import BaseModel, Field, EmailStr
 
-from ats.models.general import Statuses, Vacancies, InterviewStages
+from ats.models.enums import Statuses, Vacancies, InterviewStages
 
 
 class CandidatePersonalInfo(BaseModel):

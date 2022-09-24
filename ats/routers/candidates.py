@@ -3,7 +3,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, Query, status, HTTPException
 
 import DB
-from ats.models.general import Tags
+from ats.models.enums import Tags
 from ats.security import oauth2_scheme
 from ats.dependencies import candidate_exists
 from ats.models.candidates import AllCandidates, Statuses, FullInfoCandidate, CandidatePersonalInfo, \

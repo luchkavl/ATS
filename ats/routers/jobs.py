@@ -5,7 +5,7 @@ from ats.security import oauth2_scheme
 from ats.dependencies import CommonPathParams
 from ats.models.candidates import AllCandidates, Vacancies, Statuses, BaseCandidate, NeededInfoToCreateCandidate, \
     InterviewStages
-from ats.models.general import Tags
+from ats.models.enums import Tags
 from ats.utils import fetch_candidate_from_db, create_new_candidate, save_candidate_to_db, delete_candidate_from_db
 
 router = APIRouter(

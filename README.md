@@ -1,5 +1,21 @@
-Applicants Tracking System
+# ATS - Applicants Tracking System
 
-API_v1 root = localhost:9999/api/v1
+## API v1 root url:
 
-To run app: $ make run
+http://localhost:9999/api/v1
+
+## Run app
+
+```bash
+make run
+```
+
+## Run app for development purposes with auto-reload
+
+```bash
+make run_dev
+```
+
+## Project
+
+https://github.com/luchkavl/ATS
