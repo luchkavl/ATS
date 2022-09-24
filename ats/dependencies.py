@@ -7,7 +7,7 @@ from ats.exceptions import CandidateNotFoundException
 from ats.models.general import Vacancies
 
 
-def candidate_exists(candidate_id: UUID = Path(default=..., title="Candidate's UUID")):
+def candidate_exists(candidate_id: UUID = Path(default=..., title="Candidate's UUID")) -> UUID:
     if candidate_id not in DB.CANDIDATES:
         raise CandidateNotFoundException(candidate_id)
     return candidate_id

@@ -30,7 +30,7 @@ def save_candidate_to_db(new_candidate: NewCandidate) -> None:
         DB.JOBS[vacancy].append(new_candidate.candidate_id)
 
 
-def delete_candidate_from_db(candidate: FullInfoCandidate):
+def delete_candidate_from_db(candidate: FullInfoCandidate) -> None:
     del DB.CANDIDATES[candidate.candidate_id]
     if candidate.candidate_id in DB.FEEDBACKS:
         del DB.FEEDBACKS[candidate.candidate_id]

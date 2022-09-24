@@ -33,11 +33,11 @@ pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
 
-def get_password_hash(password):
+def get_password_hash(password) -> str:
     return pwd_context.hash(password)
 
 
-def verify_password(plain_password, hashed_password):
+def verify_password(plain_password, hashed_password) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
@@ -47,13 +47,13 @@ def create_user(reg_user: RegisterUser) -> UserInDB:
     return user
 
 
-def get_user(db, username: str):
+def get_user(db, username: str) -> UserInDB:
     if username in db:
         user_dict = db[username]
         return UserInDB(**user_dict)
 
 
-def authenticate_user(db, username: str, password: str):
+def authenticate_user(db, username: str, password: str) -> UserInDB | bool:
     user = get_user(db, username)
     if not user:
         return False
@@ -62,7 +62,7 @@ def authenticate_user(db, username: str, password: str):
     return user
 
 
-def create_access_token(data: dict, expires_delta: timedelta | None = None):
+def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -73,7 +73,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme)):
+async def get_current_user(token: str = Depends(oauth2_scheme)) -> UserInDB:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get('sub')
@@ -88,6 +88,6 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     return user
 
 
-async def admin_permission(current_user: User = Depends(get_current_user)):
+async def admin_permission(current_user: User = Depends(get_current_user)) -> None:
     if not current_user.admin:
         raise HTTPException(status_code=403, detail="Permission denied. Operation allowed only for admins")
