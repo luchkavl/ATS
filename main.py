@@ -1,30 +1,26 @@
-import time
 from fastapi import FastAPI, status, Request
 from fastapi.responses import JSONResponse
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from ats.exceptions import CandidateNotFoundException
 from ats.routers import candidates, jobs, admin, auth
+from ats.middlewares import AddProcessTimeHeaderMiddleware
 
 # 'localhost:9999/api/v1'
 app = FastAPI(root_path='/api/v1')
+
 app.include_router(auth.router)
 app.include_router(candidates.router)
 app.include_router(jobs.router)
 app.include_router(admin.router)
 
+process_time_middleware = AddProcessTimeHeaderMiddleware()
+app.add_middleware(BaseHTTPMiddleware, dispatch=process_time_middleware)
+
 
 @app.get('/')
 async def root():
     return {'message': 'Applicant Tracking System by Vladyslav Luchka'}
-
-
-@app.middleware('http')
-async def add_process_time_header(request: Request, call_next):
-    start_time = time.time()
-    response = await call_next(request)
-    process_time = time.time() - start_time
-    response.headers['X-Process-Time'] = str(process_time)
-    return response
 
 
 @app.exception_handler(CandidateNotFoundException)
