@@ -4,9 +4,13 @@ from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
 from passlib.context import CryptContext
 from jose import JWTError, jwt
+from sqlalchemy.orm import Session
 
-import DB
-from ats.models.users import UserInDB, User, RegisterUser
+
+from ats.models.users import User, RegisterUser
+from ats.dependencies import get_db
+import database.models as db_models
+from database.schemas import UserInDB
 
 SECRET_KEY = '705a557223270763263cb2665832f1e43cee68b17896a7422eb70df32dc44e2f'
 ALGORITHM = 'HS256'
@@ -33,11 +37,11 @@ pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
 
-def get_password_hash(password) -> str:
+def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 
-def verify_password(plain_password, hashed_password) -> bool:
+def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
@@ -47,10 +51,10 @@ def create_user(reg_user: RegisterUser) -> UserInDB:
     return user
 
 
-def get_user(db, username: str) -> UserInDB:
-    if username in db:
-        user_dict = db[username]
-        return UserInDB(**user_dict)
+def get_user(db: Session, username: str) -> UserInDB | None:
+    user = db.query(db_models.User).filter(db_models.User.username == username).one_or_none()
+    if user:
+        return UserInDB(username=user.username, email=user.email, full_name=user.full_name, admin=user.admin, hashed_password=user.hashed_password)
 
 
 def authenticate_user(db, username: str, password: str) -> UserInDB | bool:
@@ -73,7 +77,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
     return encoded_jwt
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme)) -> UserInDB:
+async def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)) -> UserInDB:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get('sub')
@@ -82,7 +86,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> UserInDB:
         token_data = TokenData(username=username)
     except JWTError:
         raise CREDENTIALS_EXCEPTION
-    user = get_user(DB.USERS, username=token_data.username)
+    user = get_user(db=db, username=token_data.username)
     if user is None:
         raise CREDENTIALS_EXCEPTION
     return user

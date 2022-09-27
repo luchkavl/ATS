@@ -14,8 +14,7 @@ app.include_router(candidates.router)
 app.include_router(jobs.router)
 app.include_router(admin.router)
 
-process_time_middleware = AddProcessTimeHeaderMiddleware()
-app.add_middleware(BaseHTTPMiddleware, dispatch=process_time_middleware)
+app.add_middleware(BaseHTTPMiddleware, dispatch=AddProcessTimeHeaderMiddleware())
 
 
 @app.get('/')

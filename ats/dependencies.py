@@ -1,16 +1,28 @@
 from uuid import UUID
 
 from fastapi import Path, Depends
+from sqlalchemy.orm import Session
 
-import DB
 from ats.exceptions import CandidateNotFoundException
-from ats.models.enums import Vacancies
+from ats.enums import Vacancies
+from ats import crud
+from database.db import SessionLocal
 
 
-def candidate_exists(candidate_id: UUID = Path(default=..., title="Candidate's UUID")) -> UUID:
-    if candidate_id not in DB.CANDIDATES:
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+def candidate_exists(candidate_id: UUID = Path(default=..., title="Candidate's UUID"),
+                     db: Session = Depends(get_db)) -> UUID:
+    if crud.get_candidate_by_id(db, candidate_id):
+        return candidate_id
+    else:
         raise CandidateNotFoundException(candidate_id)
-    return candidate_id
 
 
 class CommonPathParams:

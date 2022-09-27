@@ -1,7 +1,7 @@
 from uuid import UUID
 from pydantic import BaseModel, Field, EmailStr
 
-from ats.models.enums import Statuses, Vacancies, InterviewStages
+from ats import enums
 
 
 class CandidatePersonalInfo(BaseModel):
@@ -11,8 +11,8 @@ class CandidatePersonalInfo(BaseModel):
 
 
 class CandidateStatus(BaseModel):
-    status: Statuses = Field(
-        default=Statuses.active,
+    status: enums.Statuses = Field(
+        default=enums.Statuses.active,
         title='Status',
         description="Candidate's status",
         example='active')
@@ -23,26 +23,41 @@ class CandidateID(BaseModel):
 
 
 class CandidateVacancies(BaseModel):
-    vacancies: list[Vacancies] = Field(
+    vacancies: list[enums.Vacancies] = Field(
         title="Vacancies",
         description='Vacancies to which candidate qualified',
         example=['python'])
 
 
+class FeedbackCreate(BaseModel):
+    vacancy: enums.Vacancies = Field(title="Vacancy", example='python')
+    stage: enums.InterviewStages = Field(title="Interview stage", example='hr')
+    feedback_text: str = Field(title="Feedback text", example='Nice candidate.')
+
+
+class Feedback(FeedbackCreate):
+    id: int = Field(title="Feedback id", example='2')
+
+
 class CandidateFeedbacks(BaseModel):
-    feedbacks: dict[Vacancies, dict[InterviewStages, str] | None] = Field(
-        default={},
+    feedbacks: list[Feedback] = Field(
+        default=[],
         title='All feedbacks',
-        example={'python': {'hr': 'Nice'}}
+        example={'feedbacks': [
+            {
+                'id': '9',
+                'vacancy': 'python',
+                'stage': 'hr',
+                'feedback_text': 'Nice.'
+            }
+        ]
+        }
     )
 
 
 class BaseCandidate(CandidateStatus, CandidatePersonalInfo):
-    pass
-
-
-class CandidateToCandidates(CandidatePersonalInfo, CandidateID):
-    pass
+    class Config:
+        orm_mode = True
 
 
 class NeededInfoToCreateCandidate(CandidateVacancies, BaseCandidate):
@@ -57,10 +72,6 @@ class FullInfoCandidate(CandidateFeedbacks, NewCandidate):
     pass
 
 
-class CandidateToUpdate(CandidateFeedbacks, NeededInfoToCreateCandidate):
-    pass
-
-
 class AllCandidates(BaseModel):
     candidates: list[FullInfoCandidate | None] = Field(
         title="Candidates",
@@ -72,12 +83,16 @@ class AllCandidates(BaseModel):
                 "email": "vluchka@intelliarts.com",
                 "status": "active",
                 "vacancies": ["python"],
-                "feedbacks": {
-                    "python": {
-                        "hr": "Nice"
+                "feedbacks": [
+                    {
+                        'id': '1',
+                        'vacancy': 'python',
+                        'stage': 'hr',
+                        'feedback_text': 'Nice.'
                     }
-                }
-            }])
+                ]
+            }
+        ])
 
     class Config:
         schema_extra = {
@@ -89,11 +104,14 @@ class AllCandidates(BaseModel):
                     "email": "vluchka@intelliarts.com",
                     "status": "active",
                     "vacancies": ["python"],
-                    "feedbacks": {
-                        "python": {
-                            "hr": "Nice"
+                    "feedbacks": [
+                        {
+                            'id': '14',
+                            'vacancy': 'python',
+                            'stage': 'hr',
+                            'feedback_text': 'Nice.'
                         }
-                    }
+                    ]
                 },
                 {
                     "candidate_id": "2f89b7a2-7280-454b-8dd9-7d38add67d59",
@@ -102,12 +120,20 @@ class AllCandidates(BaseModel):
                     "email": "123@gmail.com",
                     "status": "active",
                     "vacancies": ["java"],
-                    "feedbacks": {
-                        "java": {
-                            "hr": "Nice",
-                            "interview": "Not bad"
+                    "feedbacks": [
+                        {
+                            'id': '1',
+                            'vacancy': 'java',
+                            'stage': 'hr',
+                            'feedback_text': 'Nice.'
+                        },
+                        {
+                            'id': '13',
+                            'vacancy': 'java',
+                            'stage': 'technical',
+                            'feedback_text': 'Good.'
                         }
-                    }
+                    ]
                 }
             ]}
 

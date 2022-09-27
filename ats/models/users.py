@@ -12,5 +12,5 @@ class RegisterUser(User):
     password: str
 
 
-class UserInDB(User):
+class UserToDB(User):
     hashed_password: str
