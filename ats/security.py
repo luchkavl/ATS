@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from ats.models.users import User, RegisterUser
 from ats.dependencies import get_db
-import database.models as db_models
+from database.models import UserModel
 from database.schemas import UserInDB
 
 SECRET_KEY = '705a557223270763263cb2665832f1e43cee68b17896a7422eb70df32dc44e2f'
@@ -52,9 +52,13 @@ def create_user(reg_user: RegisterUser) -> UserInDB:
 
 
 def get_user(db: Session, username: str) -> UserInDB | None:
-    user = db.query(db_models.User).filter(db_models.User.username == username).one_or_none()
+    user = db.query(UserModel).filter(UserModel.username == username).one_or_none()
     if user:
-        return UserInDB(username=user.username, email=user.email, full_name=user.full_name, admin=user.admin, hashed_password=user.hashed_password)
+        return UserInDB(username=user.username,
+                        email=user.email,
+                        full_name=user.full_name,
+                        admin=user.admin,
+                        hashed_password=user.hashed_password)
 
 
 def authenticate_user(db, username: str, password: str) -> UserInDB | bool:

@@ -1,10 +1,7 @@
 import uuid
 
-from fastapi import HTTPException
-from sqlalchemy.orm import Session
-
-from ats.models.candidates import FullInfoCandidate, NeededInfoToCreateCandidate, NewCandidate, Feedback
-import database.models as db_models
+from ats.models.candidates import NeededInfoToCreateCandidate, NewCandidate, Feedback
+from database.models import CandidateModel, CandidateFeedbackModel
 from database.schemas import CandidateInDB
 
 
@@ -15,12 +12,12 @@ def create_new_candidate(candidate_info: NeededInfoToCreateCandidate) -> NewCand
     return new_candidate
 
 
-def create_db_candidate(candidate) -> db_models.Candidate:
+def create_db_candidate(candidate) -> CandidateModel:
     candidate_in_db = CandidateInDB(**candidate.dict())
-    db_candidate = db_models.Candidate(**candidate_in_db.dict())
+    db_candidate = CandidateModel(**candidate_in_db.dict())
     return db_candidate
 
 
-def create_db_candidate_feedback(candidate_id: uuid.UUID, feedback: Feedback) -> db_models.CandidateFeedback:
-    db_candidate_feedback = db_models.CandidateFeedback(candidate_id=candidate_id, **feedback.dict())
+def create_db_candidate_feedback(candidate_id: uuid.UUID, feedback: Feedback) -> CandidateFeedbackModel:
+    db_candidate_feedback = CandidateFeedbackModel(candidate_id=candidate_id, **feedback.dict())
     return db_candidate_feedback

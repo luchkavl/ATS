@@ -7,7 +7,7 @@ from ats.routers import candidates, jobs, admin, auth
 from ats.middlewares import AddProcessTimeHeaderMiddleware
 
 # 'localhost:9999/api/v1'
-app = FastAPI(root_path='/api/v1')
+app = FastAPI(root_path='/api/v1', openapi_url="/api/v1/openapi.json")
 
 app.include_router(auth.router)
 app.include_router(candidates.router)

@@ -3,4 +3,4 @@ run:
 run_dev:
 	uvicorn main:app --reload & traefik/traefik --configFile=traefik/traefik.toml
 setup_db:
-	python3 setup_db.py
+	python3 database/seed.py
