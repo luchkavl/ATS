@@ -8,7 +8,7 @@ from ats.models.candidates import AllCandidates, BaseCandidate, NeededInfoToCrea
 from database.schemas import CreateDBFeedback
 
 router = APIRouter(
-    prefix='/jobs',
+    prefix='/vacancies',
     tags=[enums.Tags.jobs],
     dependencies=[Depends(oauth2_scheme)]
 )

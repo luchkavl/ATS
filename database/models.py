@@ -12,7 +12,7 @@ candidate_vacancies = Table('candidate_vacancies', Base.metadata,
                             )
 
 
-class Candidate(Base):
+class CandidateModel(Base):
     __tablename__ = 'candidates'
 
     id = Column(UUID(as_uuid=True), unique=True, primary_key=True, default=uuid.uuid4)
@@ -20,29 +20,19 @@ class Candidate(Base):
     last_name = Column(String)
     email = Column(String, unique=True)
     status = Column(Enum(enums.Statuses))
-    vacancies = relationship('Vacancy', secondary=candidate_vacancies, back_populates='candidates')
-    feedbacks = relationship('CandidateFeedback', cascade="all, delete-orphan")
-
-    def __init__(self, candidate_id, first_name, last_name, email, status):
-        self.id = candidate_id
-        self.first_name = first_name
-        self.last_name = last_name
-        self.email = email
-        self.status = status
+    vacancies = relationship('VacancyModel', secondary=candidate_vacancies, back_populates='candidates')
+    feedbacks = relationship('CandidateFeedbackModel', cascade="all, delete-orphan")
 
 
-class Vacancy(Base):
+class VacancyModel(Base):
     __tablename__ = 'jobs'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(Enum(enums.Vacancies), unique=True, primary_key=True)
-    candidates = relationship('Candidate', secondary=candidate_vacancies, back_populates='vacancies')
-
-    def __init__(self, name: enums.Vacancies):
-        self.name = name
+    candidates = relationship('CandidateModel', secondary=candidate_vacancies, back_populates='vacancies')
 
 
-class CandidateFeedback(Base):
+class CandidateFeedbackModel(Base):
     __tablename__ = 'candidate_feedbacks'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -51,14 +41,8 @@ class CandidateFeedback(Base):
     stage = Column(Enum(enums.InterviewStages))
     feedback_text = Column(Text)
 
-    def __init__(self, candidate_id, vacancy, stage, feedback_text):
-        self.candidate_id = candidate_id
-        self.vacancy = vacancy
-        self.stage = stage
-        self.feedback_text = feedback_text
 
-
-class User(Base):
+class UserModel(Base):
     __tablename__ = 'users'
 
     username = Column(String, unique=True, primary_key=True)
@@ -67,9 +51,3 @@ class User(Base):
     hashed_password = Column(String)
     admin = Column(Boolean)
 
-    def __init__(self, username, full_name, email, hashed_password, admin):
-        self.username = username
-        self.full_name = full_name
-        self.email = email
-        self.hashed_password = hashed_password
-        self.admin = admin

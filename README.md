@@ -9,8 +9,7 @@ http://localhost:9999/api/v1
 #### password: admin
 
 ## Setup DB
-1. Create DB in your PostgreSQL.
-Then put DB url to `SQLALCHEMY_DATABASE_URL` variable in `database/db.py`
+1. In `.env` file assign `DB_LINK` variable with link to your postgres db.
 
 2. ##### To setup DB - run:
     ```bash

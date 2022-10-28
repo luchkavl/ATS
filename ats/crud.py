@@ -5,13 +5,13 @@ from sqlalchemy.orm import Session
 
 from ats.models.candidates import NewCandidate, FullInfoCandidate, CandidatePersonalInfo
 from ats import utils, enums
-import database.models as db_models
 from ats.parsers import parse_full_info_candidate_from_db
 from database import queries
+from database.models import CandidateModel, CandidateFeedbackModel
 from database.schemas import CreateDBFeedback
 
 
-def add_new_candidate_to_vacancy(db: Session, candidate_to_db: db_models.Candidate, vacancy_name: enums.Vacancies):
+def add_new_candidate_to_vacancy(db: Session, candidate_to_db: CandidateModel, vacancy_name: enums.Vacancies):
     db_vacancy = queries.fetch_vacancy_by_name(db, vacancy_name)
     db_vacancy.candidates.append(candidate_to_db)
 
@@ -26,7 +26,7 @@ def create_candidate(db: Session, candidate: NewCandidate):
     db.commit()
 
 
-def _parse_db_candidates(db_full_info_candidates: list[db_models.Candidate]):
+def _parse_db_candidates(db_full_info_candidates: list[CandidateModel]):
     candidates = []
     for db_full_info_candidate in db_full_info_candidates:
         candidate = parse_full_info_candidate_from_db(db_full_info_candidate)
@@ -88,7 +88,7 @@ def get_all_candidates_from_vacancy(
 
 
 def create_candidate_feedback(db: Session, feedback: CreateDBFeedback):
-    feedback_to_db = db_models.CandidateFeedback(**feedback.dict())
+    feedback_to_db = CandidateFeedbackModel(**feedback.dict())
     db.add(feedback_to_db)
     db.commit()
 
@@ -98,6 +98,6 @@ def create_candidate_feedback(db: Session, feedback: CreateDBFeedback):
 
 def delete_candidate_from_vacancy(db: Session, vacancy_name: enums.Vacancies, candidate_id: uuid.UUID):
     vacancy = queries.fetch_vacancy_by_name(db, vacancy_name)
-    candidate: db_models.Candidate = queries.fetch_full_info_candidate_by_id(db, candidate_id)
+    candidate: CandidateModel = queries.fetch_full_info_candidate_by_id(db, candidate_id)
     vacancy.candidates.remove(candidate)
     db.commit()
