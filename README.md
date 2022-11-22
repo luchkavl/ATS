@@ -9,12 +9,9 @@ http://localhost:9999/api/v1
 #### password: admin
 
 ## Setup DB
-1. In `.env` file assign `DB_LINK` variable with link to your postgres db.
-
-2. ##### To setup DB - run:
-    ```bash
-    make setup_db
-    ```
+```bash
+make setup_db
+```
 
 ## Run app
 
