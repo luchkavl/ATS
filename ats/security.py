@@ -6,15 +6,15 @@ from passlib.context import CryptContext
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
-
+from config import settings
 from ats.models.users import User, RegisterUser
 from ats.dependencies import get_db
 from database.models import UserModel
 from database.schemas import UserInDB
 
-SECRET_KEY = '705a557223270763263cb2665832f1e43cee68b17896a7422eb70df32dc44e2f'
-ALGORITHM = 'HS256'
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
 CREDENTIALS_EXCEPTION = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
