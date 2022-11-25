@@ -1,3 +1,5 @@
+from typing import List
+
 from ats import enums
 from ats.models.candidates import FullInfoCandidate, Feedback
 from database.models import CandidateModel, CandidateFeedbackModel
@@ -9,7 +11,7 @@ def parse_db_candidate(db_full_info_candidate: CandidateModel) -> CandidateInDB:
     return candidate_frm_db
 
 
-def parse_db_candidate_vacancies(db_full_info_candidate: CandidateModel) -> list[enums.Vacancies]:
+def parse_db_candidate_vacancies(db_full_info_candidate: CandidateModel) -> List[enums.Vacancies]:
     vacancies = [vacancy.name for vacancy in db_full_info_candidate.vacancies]
     return vacancies
 
@@ -19,7 +21,7 @@ def _db_feedback_to_feedback(db_feedback: CandidateFeedbackModel) -> Feedback:
     return feedback
 
 
-def parse_db_candidate_feedbacks(db_full_info_candidate: CandidateModel) -> list[Feedback]:
+def parse_db_candidate_feedbacks(db_full_info_candidate: CandidateModel) -> List[Feedback]:
     feedbacks = []
     for db_feedback in db_full_info_candidate.feedbacks:
         feedback = _db_feedback_to_feedback(db_feedback)
