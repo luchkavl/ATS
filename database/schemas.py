@@ -5,7 +5,8 @@ from ats.models.users import UserToDB
 
 
 class CandidateInDB(CandidateID, CandidatePersonalInfo, CandidateStatus):
-    pass
+    class Config:
+        orm_mode = True
 
 
 class CandidateInDBUpdate(CandidatePersonalInfo, CandidateStatus):

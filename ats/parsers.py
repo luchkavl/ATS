@@ -5,13 +5,7 @@ from database.schemas import CandidateInDB
 
 
 def parse_db_candidate(db_full_info_candidate: CandidateModel) -> CandidateInDB:
-    candidate_frm_db = CandidateInDB(
-        candidate_id=db_full_info_candidate.id,
-        first_name=db_full_info_candidate.first_name,
-        last_name=db_full_info_candidate.last_name,
-        email=db_full_info_candidate.email,
-        status=db_full_info_candidate.status
-    )
+    candidate_frm_db = CandidateInDB(**db_full_info_candidate.__dict__)
     return candidate_frm_db
 
 
@@ -21,12 +15,7 @@ def parse_db_candidate_vacancies(db_full_info_candidate: CandidateModel) -> list
 
 
 def _db_feedback_to_feedback(db_feedback: CandidateFeedbackModel) -> Feedback:
-    feedback = Feedback(
-        vacancy=db_feedback.vacancy,
-        stage=db_feedback.stage,
-        feedback_text=db_feedback.feedback_text,
-        id=db_feedback.id
-    )
+    feedback = Feedback(**db_feedback.__dict__)
     return feedback
 
 

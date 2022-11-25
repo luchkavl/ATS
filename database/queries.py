@@ -22,13 +22,13 @@ def fetch_full_info_candidates_by_status(db: Session, status: enums.Statuses):
 
 
 def fetch_full_info_candidate_by_id(db: Session, candidate_id: uuid.UUID):
-    return db.query(CandidateModel).filter(CandidateModel.id == candidate_id).options(
+    return db.query(CandidateModel).filter(CandidateModel.candidate_id == candidate_id).options(
         joinedload(CandidateModel.vacancies), joinedload(CandidateModel.feedbacks)).\
         one_or_none()
 
 
 def fetch_base_info_candidate_by_id(db: Session, candidate_id: uuid.UUID):
-    return db.query(CandidateModel).filter(CandidateModel.id == candidate_id).one_or_none()
+    return db.query(CandidateModel).filter(CandidateModel.candidate_id == candidate_id).one_or_none()
 
 
 def fetch_all_candidates_by_vacancy_status(db: Session, vacancy: enums.Vacancies, status: enums.Statuses):

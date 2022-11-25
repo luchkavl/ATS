@@ -12,6 +12,7 @@ psycopg2 = "^2.9.3"
 python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 python-multipart = "^0.0.5"
+alembic = "^1.8.1"
 
 [tool.poetry.dev-dependencies]
 

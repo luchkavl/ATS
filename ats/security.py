@@ -52,13 +52,9 @@ def create_user(reg_user: RegisterUser) -> UserInDB:
 
 
 def get_user(db: Session, username: str) -> UserInDB | None:
-    user = db.query(UserModel).filter(UserModel.username == username).one_or_none()
-    if user:
-        return UserInDB(username=user.username,
-                        email=user.email,
-                        full_name=user.full_name,
-                        admin=user.admin,
-                        hashed_password=user.hashed_password)
+    user_db: UserModel | None = db.query(UserModel).filter(UserModel.username == username).one_or_none()
+    if user_db:
+        return UserInDB(**user_db.__dict__)
 
 
 def authenticate_user(db, username: str, password: str) -> UserInDB | bool:

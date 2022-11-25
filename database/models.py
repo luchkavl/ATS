@@ -7,7 +7,7 @@ from ats import enums
 from database.db import Base
 
 candidate_vacancies = Table('candidate_vacancies', Base.metadata,
-                            Column('candidate_id', ForeignKey('candidates.id'), primary_key=True),
+                            Column('candidate_id', ForeignKey('candidates.candidate_id'), primary_key=True),
                             Column('vacancy', ForeignKey('jobs.name'), primary_key=True)
                             )
 
@@ -15,9 +15,9 @@ candidate_vacancies = Table('candidate_vacancies', Base.metadata,
 class CandidateModel(Base):
     __tablename__ = 'candidates'
 
-    id = Column(UUID(as_uuid=True), unique=True, primary_key=True, default=uuid.uuid4)
-    first_name = Column(String)
-    last_name = Column(String)
+    candidate_id = Column(UUID(as_uuid=True), unique=True, primary_key=True, default=uuid.uuid4)
+    first_name = Column(String, nullable=False)
+    last_name = Column(String, nullable=False)
     email = Column(String, unique=True)
     status = Column(Enum(enums.Statuses))
     vacancies = relationship('VacancyModel', secondary=candidate_vacancies, back_populates='candidates')
@@ -36,18 +36,17 @@ class CandidateFeedbackModel(Base):
     __tablename__ = 'candidate_feedbacks'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    candidate_id = Column(UUID(as_uuid=True), ForeignKey('candidates.id'))
+    candidate_id = Column(UUID(as_uuid=True), ForeignKey('candidates.candidate_id'))
     vacancy = Column(Enum(enums.Vacancies), ForeignKey('jobs.name'))
     stage = Column(Enum(enums.InterviewStages))
-    feedback_text = Column(Text)
+    feedback_text = Column(Text, nullable=False)
 
 
 class UserModel(Base):
     __tablename__ = 'users'
 
     username = Column(String, unique=True, primary_key=True)
-    full_name = Column(String)
+    full_name = Column(String, nullable=False)
     email = Column(String, unique=True)
-    hashed_password = Column(String)
-    admin = Column(Boolean)
-
+    hashed_password = Column(String, nullable=False)
+    admin = Column(Boolean, nullable=False)
